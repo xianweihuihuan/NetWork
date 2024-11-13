@@ -1,6 +1,7 @@
-#include "Msg.h"
-#include "NetworkTest.grpc.pb.h"
-#include "NetworkTest.pb.h"
+#include "socket/msg.h"
+#include "server/server.h"
+#include "proto/NetworkTest.grpc.pb.h"
+#include "proto/NetworkTest.pb.h"
 #include <algorithm>
 #include <arpa/inet.h>
 #include <cstddef>
@@ -155,5 +156,19 @@ public:
 int main() {
     // Server 端的监听地址
     auto test = TestInit("0.0.0.0:1234");
-    // Put your code Here!
+
+    TcpServer server;
+
+    if (!server.setListen(PORT)) {
+        return EXIT_FAILURE;
+    }
+    if (!server.acceptConn()) {
+      return EXIT_FAILURE;
+    }
+
+    while (1) {
+        std::string msg;
+        server.getSocket()->recvMsg(msg);
+        test->commit(std::move(msg));
+    }
 }

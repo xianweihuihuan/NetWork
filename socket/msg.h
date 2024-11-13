@@ -40,5 +40,5 @@ enum TestStatus : uint32_t {
     Unknow
 };
 constexpr int PORT = 4001;
-#define ServerAddr "192.168.30.170"
+#define ServerAddr "127.0.0.1"
 #endif

@@ -1,6 +1,7 @@
-#include "Msg.h"
-#include "NetworkTest.grpc.pb.h"
-#include "NetworkTest.pb.h"
+#include "socket/msg.h"
+#include "client/client.h"
+#include "proto/NetworkTest.grpc.pb.h"
+#include "proto/NetworkTest.pb.h"
 #include <algorithm>
 #include <arpa/inet.h>
 #include <asm-generic/socket.h>
@@ -245,6 +246,15 @@ class mess {
 
 int main() {
     // Server 端的监听地址
-    auto msg = InitTestClient("192.168.30.170:1234");
-    // Put your code Here!
+    auto msg = InitTestClient("127.0.0.1:1234");
+
+    TcpClient client;
+    bool ret = client.connectToHost(ServerAddr,PORT);
+    if (!ret) {
+        return -1;
+    }
+    while (1) {
+        std::string str = msg->pop();
+        client.getSocket()->sendMsg(str);
+    }
 }

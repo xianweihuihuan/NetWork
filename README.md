@@ -1,49 +1,73 @@
-### TCP 部分
+# TCP 粘包问题
 
-如果你的 Ubuntu 不能正常使用 gRPC 的话，可以试试 Docker pull 下来一个 Arch Linux.
+在本次任务中，你需要解决一个 TCP 粘包问题。
 
-```bash
-apt install docker docker.io
-gpasswd -a 你的用户名 docker
+## 任务要求
+- 使用 C++ 编程
+- 掌握 Linux 网络编程
+
+## 环境要求
+
+本项目依赖以下工具：CMake、gRPC、Protobuf
+
+### Ubuntu 用户
+
+Ubuntu 官方库中提供了 Protobuf，但 gRPC 可能需要从源代码编译。
+
+Protobuf 安装
+```sh
+sudo apt update
+sudo apt install -y protobuf-compiler libprotobuf-dev
 ```
 
-- apt 安装docker 并运行一个 archlinux 实例
+gRPC 安装可以参考 [gRPC C++ 构建](https://github.com/grpc/grpc/blob/master/BUILDING.md)
 
-```bash
-docker pull archlinux 
-docker run -it --net=host --name=arch_linux archlinux /bin/bash 
+### Arch 用户
+```sh
+sudo pacman -S protobuf grpc
 ```
 
-- docker exec 启动容器中的一个程序 (注意在宿主系统中，不是在容器中)
+## 任务需求
 
-```bash
-docker start arch_linux
-docker exec -it arch_linux /bin/bash
+你需要完成客户端与服务器的连接和数据传输任务：
+
+- 客户端负责发送字符串，API 位于 [client.h](./client/client.h) 中，你需要在 [client.cpp](./client/client.cpp) 中实现
+- 服务端负责接收字符串，API 位于 [server.h](./server/server.h) 中，你需要在 [server.cpp](./server/server.cpp) 中实现
+
+测试时我们会模拟以下苛刻条件：
+- 网络干扰
+- 网络延迟
+- 数据传输时 MTU 小于系统值
+
+传输的数据类型包括 ASCII 和二进制，gRPC 将用于验证字符串传输的正确性。
+
+本任务对 gRPC 和 Protobuf 没有其他要求，有兴趣的同学可以研究代码中如何实现干扰操作。
+## 构建运行
+clone 该仓库到本地
+```sh
+git clone git@github.com:xiyou-linuxer/NetWork.git
 ```
 
-- docker 给你提供了一个 Arch Linux 的环境
-
-```bash
-// 更换镜像源
-echo 'Server = https://mirrors.bfsu.edu.cn/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist
-# Arch 的滚包
-pacman -Syyu
-# 安装本lab的一些包
-pacman -S grpc cmake gcc make pkgconfig
+给 [build.sh](./build.sh) 添加可执行权限
+```sh
+chmod +x build.sh
 ```
 
-- 使用 cmake
-```bash
-cd Network
-mkdir build
-cmake ..
-make -j16
-# 在build下将会生成两个client.out 和 server.out
+运行该脚本
+```sh
+./build.sh
 ```
 
-同时你也可以在 vscode 中下载 docker 插件.
+如果构建成功，会在当前目录下生成两个文件：
+- client.out
+- server.out
 
-在你的插件左侧一栏中会有你本机的正在运行的容器。可以右键 attach 进去。在 vscode 里开发。
+在不同终端同时运行这两个可执行文件，即可开始自动测试
+
+当出现以下输出时，说明你已经通过了所有测试：
+```
+Congratulations! You Pass The Test!
+```
 
 ### LICENSE
 
