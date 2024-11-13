@@ -33,6 +33,7 @@ sudo pacman -S protobuf grpc
 
 - 客户端负责发送字符串，API 位于 [client.h](./client/client.h) 中，你需要在 [client.cpp](./client/client.cpp) 中实现
 - 服务端负责接收字符串，API 位于 [server.h](./server/server.h) 中，你需要在 [server.cpp](./server/server.cpp) 中实现
+- TcpSocket 类负责具体的数据收发操作，API 位于 [socket.h](./socket/socket.h) 中，你需要在 [socket.cpp](./socket/socket.cpp) 中实现
 
 测试时我们会模拟以下苛刻条件：
 - 网络干扰
