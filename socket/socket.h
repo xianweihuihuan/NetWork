@@ -6,6 +6,8 @@
 #include <iostream>
 #include <string>
 
+#define Sep "\r\n"
+#define Sepsz 2
 class TcpSocket {
   public:
   TcpSocket(int sockfd);
